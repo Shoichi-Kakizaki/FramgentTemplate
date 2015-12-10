@@ -45,19 +45,20 @@ public class FTemplate extends Fragment {
         }
 
         mOnClickListenerRef = new WeakReference<>((FTemplate.OnClickListener) activity);
-        View view = getView();
+    }
 
-        if (view != null) {
-            getView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    OnClickListener onClickListener = mOnClickListenerRef.get();
-                    if (onClickListener != null) {
-                        onClickListener.onFTemplateClick();
-                    }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OnClickListener onClickListener = mOnClickListenerRef.get();
+                if (onClickListener != null) {
+                    onClickListener.onFTemplateClick();
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
