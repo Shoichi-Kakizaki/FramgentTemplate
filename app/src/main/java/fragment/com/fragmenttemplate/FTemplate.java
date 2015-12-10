@@ -31,7 +31,20 @@ public class FTemplate extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        ;
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OnClickListener onClickListener = mOnClickListenerRef.get();
+                if (onClickListener != null) {
+                    onClickListener.onFTemplateClick();
+                }
+            }
+        });
+
+        return view;
     }
 
     @Override
@@ -45,20 +58,6 @@ public class FTemplate extends Fragment {
         }
 
         mOnClickListenerRef = new WeakReference<>((FTemplate.OnClickListener) activity);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OnClickListener onClickListener = mOnClickListenerRef.get();
-                if (onClickListener != null) {
-                    onClickListener.onFTemplateClick();
-                }
-            }
-        });
     }
 
     @Override
