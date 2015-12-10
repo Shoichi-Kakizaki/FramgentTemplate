@@ -13,7 +13,7 @@ public class MainActivity extends Activity implements FTemplate.OnClickListener 
     }
 
     @Override
-    public void backBrowserTransaction() {
+    public void onFTemplateClick() {
         Log.d("Activty", "通知ｷﾀ━━━━(ﾟ∀ﾟ)━━━━!!");
     }
 }
