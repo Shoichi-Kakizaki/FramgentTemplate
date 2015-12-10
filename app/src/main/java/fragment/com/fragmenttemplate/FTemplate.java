@@ -2,10 +2,13 @@ package fragment.com.fragmenttemplate;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by kakizaki_shoichi on 15/12/09.
@@ -16,12 +19,10 @@ public class FTemplate extends Fragment {
 
     /*interfaceを設定してActivityで呼べるようにする*/
     public interface OnClickListener {
-        public void backBrowserTransaction();
+        void onFTemplateClick();
     }
 
-    private View mV;
-    private Activity mActivity;
-    private OnClickListener mListener;
+    private WeakReference<FTemplate.OnClickListener> mOnClickListenerRef;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,30 +31,38 @@ public class FTemplate extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mV = inflater.inflate(R.layout.fragment_main, container, false);
-        return mV;
+        return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.mActivity = activity;
-        if (activity instanceof OnClickListener == false) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Activity activity = getActivity();
+
+        if (!(activity instanceof FTemplate.OnClickListener)) {
             throw new ClassCastException("activity が ClickListener を実装していません.");
         }
-        mListener = ((OnClickListener) activity);
+
+        mOnClickListenerRef = new WeakReference<>((FTemplate.OnClickListener) activity);
+        View view = getView();
+
+        if (view != null) {
+            getView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    OnClickListener onClickListener = mOnClickListenerRef.get();
+                    if (onClickListener != null) {
+                        onClickListener.onFTemplateClick();
+                    }
+                }
+            });
+        }
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-         if (mListener != null) {
-             mListener.backBrowserTransaction();
-         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDetach() {
+        super.onDetach();
+        mOnClickListenerRef = null;
     }
 }
